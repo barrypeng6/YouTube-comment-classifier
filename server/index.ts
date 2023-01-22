@@ -17,23 +17,19 @@ server.get('/api', async (request, reply) => {
   return 'root path\n'
 })
 
-server.get('/models', async (request, reply) => {
-  const data = await getModels()
-  return data
-})
+server.get('/api/v1/youtube/:youtubeID/comments-analyze', async (request, reply) => {
+  const videoId = (request.params as any).youtubeid
+  const comments = await getComments(videoId)
+  if (!comments) {
+    throw new Error('comment undefined')
+  }
+  const result = await getCompletion(comments)
 
-// https://beta.openai.com/docs/api-reference/completions
-server.get('/completions', async (request, reply) => {
-  const data = await getCompletion()
-  return data
-})
-
-
-server.get('/api/vi/youtube/:youtubeID/comments-analyze', async (request, reply) => {
-  console.log(request.params)
-  const comments = await getComments((request.params as any).youtubeID)
-
-  return comments
+  return reply.send({
+    videoId: videoId,
+    comments: comments,
+    openaiRes: result
+  })
 })
 
 
