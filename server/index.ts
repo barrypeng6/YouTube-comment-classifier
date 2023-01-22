@@ -10,7 +10,7 @@ const server = fastify({
 })
 
 server.register(fastifyStatic, {
-  root: path.join(__dirname, 'client')
+  root: path.join(__dirname, '../client')
 })
 
 server.get('/api', async (request, reply) => {
